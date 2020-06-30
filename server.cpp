@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define BACKLOG	3;
+#define BACKLOG	3
 
 int main(int argc, char **argv) {
 	int socketfd, port;
@@ -56,12 +56,16 @@ int main(int argc, char **argv) {
 
 
 	// Listen on socket
-	if (listen(socketfd, BACKLOG) < 0) {
+	if ((listen(socketfd, BACKLOG)) < 0) {
 		cerr << "listen failed: " << strerror(errno) << endl;
 	}
 
 
 	// Accept a call
+	if ((accept(socketfd, (struct sockaddr *)&hint, (socklen_t *)sizeof(hint))) < 0) {
+		cerr << "accept failed: " << strerror(errno) << endl;
+	}
+
 
 	//Close the closet
 	close(socketfd);
