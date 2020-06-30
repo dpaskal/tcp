@@ -7,9 +7,11 @@
 
 using namespace std;
 
+#define BACKLOG	3;
 
 int main(int argc, char **argv) {
 	int socketfd, port;
+	int opt = 1;
 	struct sockaddr_in hint;
 
 	// Check input
@@ -32,6 +34,14 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	// Set socket options to reuse address and port
+	if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+		cerr << "setsockopt failed" << strerror(errno) << endl;
+		close(socketfd);
+		exit(EXIT_FAILURE);
+	}
+
+
 	// Bind the socket to ip:port
 	memset(&hint, 0, sizeof(hint));
 	hint.sin_family = AF_INET;			// IPv4
@@ -44,7 +54,12 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+
 	// Listen on socket
+	if (listen(socketfd, BACKLOG) < 0) {
+		cerr << "listen failed: " << strerror(errno) << endl;
+	}
+
 
 	// Accept a call
 
