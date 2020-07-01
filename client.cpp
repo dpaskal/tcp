@@ -75,12 +75,12 @@ int main(int argc, char** argv) {
 		cerr << "connect failed: " << strerror(errno) << endl;
 		exit(EXIT_FAILURE);
 	}
-	
+
 	// Set message
 	strcpy(buffer, "test");
 
 	// Send message
-	if (send(socketfd, buffer, strlen(buffer), 0)) {
+	if (!send(socketfd, buffer, strlen(buffer), 0)) {
 		cerr << "send failed: " << strerror(errno) << endl;
 	}
 

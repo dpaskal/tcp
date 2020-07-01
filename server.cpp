@@ -64,7 +64,8 @@ int main(int argc, char **argv) {
 
 
 	// Accept a call
-	if ((newsockfd = accept(socketfd, (struct sockaddr *)&hint, (socklen_t *)sizeof(hint))) < 0) {
+	socklen_t addrlen = sizeof(hint); // (socklen_t *)sizeof(hint)
+	if ((newsockfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
 		cerr << "accept failed: " << strerror(errno) << endl;
 	}
 
@@ -74,7 +75,11 @@ int main(int argc, char **argv) {
 	}
 	buffer[bytesRead] = '\0';
 
-	cout << "buffer: " << buffer << endl;
+	cout << "server's buffer: " << buffer << endl;
+
+
+	strcpy(buffer, "rest");
+	send(newsockfd, buffer, 1024, 0);
 
 	//Close the closet
 	close(socketfd);
