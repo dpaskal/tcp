@@ -16,14 +16,15 @@ Example: ./client X Alice remote01.cs.binghamton.edu12000
 
 int main(int argc, char** argv) {
 	if ( argc != 4 ) {
-		cerr << "Usage: ./client <client_id> <client_name> <server_name:port>" << endl;
+		cerr << "Usage: ./client <client_id> <client_name> <server_name> <port>" << endl;
 		exit(EXIT_FAILURE);
 	}
-	struct sockaddr_in servaddr;
+	struct sockaddr_in hout;
 	char buffer[1024];
 	int socketfd, newsockfd, port;
 	string client_ID = argv[1], client_name = argv[2], server_name = argv[3];
-	
+
+	// Validate port number
 	port = atoi(argv[4]);
 	if ((port <= 0) || port > 65535) {
 		cerr << "port invalid" << endl;
