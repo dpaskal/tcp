@@ -10,9 +10,11 @@ using namespace std;
 #define BACKLOG	3
 
 int main(int argc, char **argv) {
-	int socketfd, port;
+	char buffer[1024];
+	int socketfd, newsockfd, port;
 	int opt = 1;
 	struct sockaddr_in hint;
+	ssize_t bytesRead;
 
 	// Check input
 	if ( argc != 2 ) {
@@ -62,10 +64,17 @@ int main(int argc, char **argv) {
 
 
 	// Accept a call
-	if ((accept(socketfd, (struct sockaddr *)&hint, (socklen_t *)sizeof(hint))) < 0) {
+	if ((newsockfd = accept(socketfd, (struct sockaddr *)&hint, (socklen_t *)sizeof(hint))) < 0) {
 		cerr << "accept failed: " << strerror(errno) << endl;
 	}
 
+	// Read from new socket fd
+	if ((bytesRead = read(newsockfd, buffer, 1024)) < 0) {
+		cerr << "read failed: " << strerror(errno) << endl;
+	}
+	buffer[bytesRead] = '\0';
+
+	cout << "buffer: " << buffer << endl;
 
 	//Close the closet
 	close(socketfd);
