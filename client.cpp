@@ -50,8 +50,16 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(port);
+
+	// Translate input to hostent struct
+	// https://man7.org/linux/man-pages/man3/gethostbyname.3.html
+	if ((hn = gethostbyname(argv[1])) == NULL )
+		return 1; // error checking gethostbyname
+
+	// Fill server info
+	serv_addr.sin_family = AF_INET;							// IPv4
+	memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
+	serv_addr.sin_port = htons(port);						// port
 
 	close(socketfd);
 	return 0;
