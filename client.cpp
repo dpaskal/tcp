@@ -57,10 +57,11 @@ int main(int argc, char** argv) {
 	// // https://man7.org/linux/man-pages/man3/gethostbyname.3.html
 	// if ((hn = gethostbyname(argv[1])) == NULL )
 	// 	return 1; // error checking gethostbyname
+	// memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
+
 
 	// Fill server info
 	serv_addr.sin_family = AF_INET;							// IPv4
-	// memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
 	serv_addr.sin_port = htons(port);						// port
 
 	// Convert IP addresses from text to binary
