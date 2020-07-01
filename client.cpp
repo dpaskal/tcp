@@ -4,6 +4,8 @@
 #include <netdb.h>
 #include <string.h>
 #include <unistd.h> // close(int fd)
+#include <arpa/inet.h> // inet_pton()
+
 
 using namespace std;
 
@@ -27,7 +29,7 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	string client_ID = argv[1], client_name = argv[2], server_name = argv[3];
+	char *client_ID = argv[1], *client_name = argv[2], *server_name = argv[3];
 
 	// Validate port number
 	port = atoi(argv[4]);
@@ -43,7 +45,7 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	// Set socket options o reuse address and port
+	// Set socket options to reuse address and port
 	if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
 		cerr << "setsockopt failed" << strerror(errno) << endl;
 		close(socketfd);
@@ -60,6 +62,12 @@ int main(int argc, char** argv) {
 	serv_addr.sin_family = AF_INET;							// IPv4
 	memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
 	serv_addr.sin_port = htons(port);						// port
+
+	// Convert IP addresses from text to binary
+	if (inet_pton(AF_INET, argv[3], &serv_addr.sin_addr) <= 0) {
+		cerr << "inet_pton failed: " << strerror(errno) << endl;
+		exit(EXIT_FAILURE);
+	}
 
 	close(socketfd);
 	return 0;
