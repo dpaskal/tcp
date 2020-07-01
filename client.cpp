@@ -19,9 +19,9 @@ Example: ./client X Alice remote01.cs.binghamton.edu12000
 int main(int argc, char** argv) {
 
 	struct sockaddr_in serv_addr;
-	struct hostent *hn; // for translating ip addresses
+	// struct hostent *hn; // for translating ip addresses
 	char buffer[1024];
-	int socketfd, newsockfd, port, opt = 1;
+	int socketfd, port, opt = 1, bytes_read;
 
 	// Check input
 	if ( argc != 5 ) {
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 	}
 
 	// Create a TCP socket
-	if ( (socketfd = socket(AF_INET, SOCK_STREAM, 0) < 0)) {
+	if ( (socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		cout << "socket creation failed: " << strerror(errno) << endl;
 		close(socketfd);
 		exit(EXIT_FAILURE);
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 
 	// Set socket options to reuse address and port
 	if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-		cerr << "setsockopt failed" << strerror(errno) << endl;
+		cerr << "setsockopt failed: " << strerror(errno) << endl;
 		close(socketfd);
 		exit(EXIT_FAILURE);
 	}
@@ -65,10 +65,32 @@ int main(int argc, char** argv) {
 	serv_addr.sin_port = htons(port);						// port
 
 	// Convert IP addresses from text to binary
-	if (inet_pton(AF_INET, argv[3], &serv_addr.sin_addr) <= 0) {
+	if (inet_pton(AF_INET, server_name, &serv_addr.sin_addr) <= 0) {
 		cerr << "inet_pton failed: " << strerror(errno) << endl;
 		exit(EXIT_FAILURE);
 	}
+
+	// Connect to socket
+	if (connect(socketfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+		cerr << "connect failed: " << strerror(errno) << endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	// Set message
+	strcpy(buffer, "test");
+
+	// Send message
+	if (send(socketfd, buffer, strlen(buffer), 0)) {
+		cerr << "send failed: " << strerror(errno) << endl;
+	}
+
+	if (!(bytes_read = read(socketfd, buffer, sizeof(buffer)))) {
+		cerr << "read failed: " << strerror(errno) << endl;
+	}
+	buffer[bytes_read] = '\0';
+
+	// Print out the received message
+	cout << "Message received: " << buffer << endl;
 
 	close(socketfd);
 	return 0;
