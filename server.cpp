@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 
 	// Bind the socket to ip:port
 	memset(&hint, 0, sizeof(hint));
+	
 	hint.sin_family = AF_INET;			// IPv4
 	hint.sin_port = htons(port);		// port
 	hint.sin_addr.s_addr = INADDR_ANY;	// localhost
