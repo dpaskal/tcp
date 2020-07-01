@@ -15,13 +15,18 @@ Example: ./client X Alice remote01.cs.binghamton.edu12000
 */
 
 int main(int argc, char** argv) {
-	if ( argc != 4 ) {
+
+	struct sockaddr_in serv_addr;
+	struct hostent *hn; // for translating ip addresses
+	char buffer[1024];
+	int socketfd, newsockfd, port, opt = 1;
+
+	// Check input
+	if ( argc != 5 ) {
 		cerr << "Usage: ./client <client_id> <client_name> <server_name> <port>" << endl;
 		exit(EXIT_FAILURE);
 	}
-	struct sockaddr_in hout;
-	char buffer[1024];
-	int socketfd, newsockfd, port;
+
 	string client_ID = argv[1], client_name = argv[2], server_name = argv[3];
 
 	// Validate port number
@@ -31,13 +36,22 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	// Create a TCP socket
 	if ( (socketfd = socket(AF_INET, SOCK_STREAM, 0) < 0)) {
 		cout << "socket creation failed: " << strerror(errno) << endl;
 		close(socketfd);
 		exit(EXIT_FAILURE);
 	}
 
+	// Set socket options o reuse address and port
+	if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+		cerr << "setsockopt failed" << strerror(errno) << endl;
+		close(socketfd);
+		exit(EXIT_FAILURE);
+	}
 
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(port);
 
 	close(socketfd);
 	return 0;

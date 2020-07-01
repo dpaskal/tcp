@@ -11,8 +11,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
 	char buffer[1024];
-	int socketfd, newsockfd, port;
-	int opt = 1;
+	int socketfd, newsockfd, port, opt = 1;
 	struct sockaddr_in hint;
 	ssize_t bytesRead;
 
