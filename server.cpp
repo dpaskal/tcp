@@ -11,7 +11,7 @@ using namespace std;
 #define DONE_MSG "Sent acknowledgment to both X and Y"
 
 int main(int argc, char **argv) {
-	char buffer[1024];
+	char firstBuffer[1024], secondBuffer[1024];
 	int socketfd, firstfd, secondfd, port, opt = 1;
 	struct sockaddr_in hint;
 	ssize_t bytesRead;
@@ -71,11 +71,11 @@ int main(int argc, char **argv) {
 	}
 
 	// Read from first socket fd
-	if ((bytesRead = read(firstfd, buffer, 1024)) < 0) {
+	if ((bytesRead = read(firstfd, firstBuffer, 1024)) < 0) {
 		cerr << "first read failed: " << strerror(errno) << endl;
 	}
-	buffer[bytesRead] = '\0';
-	cout << "server's buffer after first read: " << buffer << endl; // debug
+	firstBuffer[bytesRead] = '\0';
+	cout << "server's firstBuffer after first read: " << firstBuffer << endl; // debug
 
 	// Accept second call
 	if ((secondfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
@@ -83,18 +83,20 @@ int main(int argc, char **argv) {
 	}
 
 	// Read from second socket fd
-	if ((bytesRead = read(secondfd, buffer, 1024)) < 0) {
+	if ((bytesRead = read(secondfd, secondBuffer, 1024)) < 0) {
 		cerr << "second read failed: " << strerror(errno) << endl;
 	}
-	buffer[bytesRead] = '\0';
-	cout << "server's buffer after second read: " << buffer << endl; // debug
+	secondBuffer[bytesRead] = '\0';
+	cout << "server's secondBuffer after second read: " << secondBuffer << endl; // debug
 
 
 	// Respond to first call
-	strcpy(buffer, "rest");
-	send(firstfd, buffer, 1024, 0);
+	strcpy(firstBuffer, "rest");
+	send(firstfd, firstBuffer, 1024, 0);
 
 	// Respond to second call
+	strcpy(secondBuffer, "done");
+	send(secondfd, secondBuffer, 1024, 0);
 
 	//Close the closet
 	close(socketfd);
