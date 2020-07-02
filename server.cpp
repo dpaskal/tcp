@@ -71,13 +71,15 @@ int main(int argc, char **argv) {
 
 	// Accept second call
 
-	// Read from new socket fd
+	// Read from first socket fd
 	if ((bytesRead = read(newsockfd, buffer, 1024)) < 0) {
 		cerr << "read failed: " << strerror(errno) << endl;
 	}
 	buffer[bytesRead] = '\0';
+	cout << "server's buffer: " << buffer << endl; // debug
 
-	cout << "server's buffer: " << buffer << endl;
+	// Read from second socket fd
+
 
 	// Respond to first call
 	strcpy(buffer, "rest");
