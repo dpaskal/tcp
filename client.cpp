@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 	serv_addr.sin_port = htons(port);						// port
 
 	// Convert IP addresses from text to binary
-	if (inet_pton(AF_INET, server_name, &serv_addr.sin_addr) <= 0) {
+	if (!inet_pton(AF_INET, server_name, &serv_addr.sin_addr) < 0) {
 		cerr << "inet_pton failed: " << strerror(errno) << endl;
 		exit(EXIT_FAILURE);
 	}
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 	}
 
 	// Set message
-	strcpy(buffer, "test");
+	strcpy(buffer, client_ID + ' : ' + 'test');
 
 	// Send message
 	if (!send(socketfd, buffer, strlen(buffer), 0)) {

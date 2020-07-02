@@ -63,11 +63,13 @@ int main(int argc, char **argv) {
 	}
 
 
-	// Accept a call
+	// Accept first call
 	socklen_t addrlen = sizeof(hint); // (socklen_t *)sizeof(hint)
 	if ((newsockfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
 		cerr << "accept failed: " << strerror(errno) << endl;
 	}
+
+	// Accept second call
 
 	// Read from new socket fd
 	if ((bytesRead = read(newsockfd, buffer, 1024)) < 0) {
@@ -77,9 +79,11 @@ int main(int argc, char **argv) {
 
 	cout << "server's buffer: " << buffer << endl;
 
-
+	// Respond to first call
 	strcpy(buffer, "rest");
 	send(newsockfd, buffer, 1024, 0);
+
+	// Respond to second call
 
 	//Close the closet
 	close(socketfd);
