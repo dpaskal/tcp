@@ -8,10 +8,11 @@
 using namespace std;
 
 #define BACKLOG	3
+#define DONE_MSG "Sent acknowledgment to both X and Y"
 
 int main(int argc, char **argv) {
 	char buffer[1024];
-	int socketfd, newsockfd, port, opt = 1;
+	int socketfd, firstfd, secondfd, port, opt = 1;
 	struct sockaddr_in hint;
 	ssize_t bytesRead;
 
@@ -65,25 +66,33 @@ int main(int argc, char **argv) {
 
 	// Accept first call
 	socklen_t addrlen = sizeof(hint); // (socklen_t *)sizeof(hint)
-	if ((newsockfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
-		cerr << "accept failed: " << strerror(errno) << endl;
+	if ((firstfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
+		cerr << "first accept failed: " << strerror(errno) << endl;
 	}
-
-	// Accept second call
 
 	// Read from first socket fd
-	if ((bytesRead = read(newsockfd, buffer, 1024)) < 0) {
-		cerr << "read failed: " << strerror(errno) << endl;
+	if ((bytesRead = read(firstfd, buffer, 1024)) < 0) {
+		cerr << "first read failed: " << strerror(errno) << endl;
 	}
 	buffer[bytesRead] = '\0';
-	cout << "server's buffer: " << buffer << endl; // debug
+	cout << "server's buffer after first read: " << buffer << endl; // debug
+
+	// Accept second call
+	if ((secondfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
+		cerr << "second accept failed: " << strerror(errno) << endl;
+	}
 
 	// Read from second socket fd
+	if ((bytesRead = read(secondfd, buffer, 1024)) < 0) {
+		cerr << "second read failed: " << strerror(errno) << endl;
+	}
+	buffer[bytesRead] = '\0';
+	cout << "server's buffer after second read: " << buffer << endl; // debug
 
 
 	// Respond to first call
 	strcpy(buffer, "rest");
-	send(newsockfd, buffer, 1024, 0);
+	send(firstfd, buffer, 1024, 0);
 
 	// Respond to second call
 
