@@ -77,7 +77,9 @@ int main(int argc, char** argv) {
 	}
 
 	// Set message
-	strcpy(buffer, client_ID + ' : ' + 'test');
+	strcpy(buffer, client_ID);
+	strcat(buffer, " : ");
+	strcat(buffer, client_name);
 
 	// Send message
 	if (!send(socketfd, buffer, strlen(buffer), 0)) {
