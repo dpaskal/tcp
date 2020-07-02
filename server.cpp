@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 		cerr << "first read failed: " << strerror(errno) << endl;
 	}
 	firstBuffer[bytesRead] = '\0';
-	cout << "server's firstBuffer after first read: " << firstBuffer << endl; // debug
+	// cout << "server's firstBuffer after first read: " << firstBuffer << endl; // debug
 
 	// Accept second call
 	if ((secondfd = accept(socketfd, (struct sockaddr *)&hint, &addrlen)) < 0) {
@@ -87,10 +87,10 @@ int main(int argc, char **argv) {
 		cerr << "second read failed: " << strerror(errno) << endl;
 	}
 	secondBuffer[bytesRead] = '\0';
-	cout << "server's secondBuffer after second read: " << secondBuffer << endl; // debug
+	// cout << "server's secondBuffer after second read: " << secondBuffer << endl; // debug
 
 	strcpy(returnBuffer, firstBuffer);
-	strcat(returnBuffer, "received before ");
+	strcat(returnBuffer, " received before ");
 	strcat(returnBuffer, secondBuffer);
 	// Respond to first call
 	send(firstfd, returnBuffer, 1024, 0);

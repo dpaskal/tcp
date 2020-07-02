@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 	buffer[bytes_read] = '\0';
 
 	// Print out the received message
-	cout << "Message received: " << buffer << endl;
+	cout << client_ID << " received message: " << buffer << endl;
 
 	close(socketfd);
 	return 0;
