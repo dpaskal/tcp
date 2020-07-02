@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 
 	// Set message
 	strcpy(buffer, client_ID);
-	strcat(buffer, " : ");
+	strcat(buffer, ": ");
 	strcat(buffer, client_name);
 
 	// Send message
