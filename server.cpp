@@ -11,7 +11,7 @@ using namespace std;
 #define DONE_MSG "Sent acknowledgment to both X and Y"
 
 int main(int argc, char **argv) {
-	char firstBuffer[1024], secondBuffer[1024];
+	char firstBuffer[1024], secondBuffer[1024], returnBuffer[1024];
 	int socketfd, firstfd, secondfd, port, opt = 1;
 	struct sockaddr_in hint;
 	ssize_t bytesRead;
@@ -89,14 +89,14 @@ int main(int argc, char **argv) {
 	secondBuffer[bytesRead] = '\0';
 	cout << "server's secondBuffer after second read: " << secondBuffer << endl; // debug
 
-
+	strcpy(returnBuffer, firstBuffer);
+	strcat(returnBuffer, "received before ");
+	strcat(returnBuffer, secondBuffer);
 	// Respond to first call
-	strcpy(firstBuffer, "rest");
-	send(firstfd, firstBuffer, 1024, 0);
+	send(firstfd, returnBuffer, 1024, 0);
 
 	// Respond to second call
-	strcpy(secondBuffer, "done");
-	send(secondfd, secondBuffer, 1024, 0);
+	send(secondfd, returnBuffer, 1024, 0);
 
 	//Close the closet
 	close(socketfd);
