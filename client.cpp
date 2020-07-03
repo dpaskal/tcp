@@ -19,7 +19,7 @@ Example: ./client X Alice remote01.cs.binghamton.edu12000
 int main(int argc, char** argv) {
 
 	struct sockaddr_in serv_addr;
-	// struct hostent *hn; // for translating ip addresses
+	struct hostent *hn; // for translating ip addresses
 	char buffer[1024];
 	int socketfd, port, opt = 1, bytes_read;
 
@@ -55,9 +55,9 @@ int main(int argc, char** argv) {
 
 	// // Translate input to hostent struct
 	// // https://man7.org/linux/man-pages/man3/gethostbyname.3.html
-	// if ((hn = gethostbyname(argv[1])) == NULL )
-	// 	return 1; // error checking gethostbyname
-	// memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
+	if ((hn = gethostbyname(server_name)) == NULL )
+		return 1; // error checking gethostbyname
+	memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
 
 
 	// Fill server info
@@ -65,10 +65,10 @@ int main(int argc, char** argv) {
 	serv_addr.sin_port = htons(port);						// port
 
 	// Convert IP addresses from text to binary
-	if (!inet_pton(AF_INET, server_name, &serv_addr.sin_addr)) {
-		cerr << "inet_pton failed: " << strerror(errno) << endl;
-		exit(EXIT_FAILURE);
-	}
+	// if ((inet_pton(AF_INET, server_name, &serv_addr.sin_addr)) < 0) {
+	// 	cerr << "inet_pton failed: " << strerror(errno) << endl;
+	// 	exit(EXIT_FAILURE);
+	// }
 
 	// Connect to socket
 	if (connect(socketfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
