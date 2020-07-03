@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
 	struct sockaddr_in serv_addr;
 	struct hostent *hn; // for translating ip addresses
-	char buffer[1024];
+	char sendBuffer[1024], recvBuffer[1024];
 	int socketfd, port, opt = 1, bytes_read;
 
 	// Check input
@@ -77,22 +77,24 @@ int main(int argc, char** argv) {
 	}
 
 	// Set message
-	strcpy(buffer, client_ID);
-	strcat(buffer, ": ");
-	strcat(buffer, client_name);
+	strcpy(sendBuffer, client_ID);
+	strcat(sendBuffer, ": ");
+	strcat(sendBuffer, client_name);
 
 	// Send message
-	if (!(send(socketfd, buffer, strlen(buffer), 0))) {
+	if (!(send(socketfd, sendBuffer, strlen(sendBuffer), 0))) {
 		cerr << "send failed: " << strerror(errno) << endl;
 	}
 
-	if (!(bytes_read = read(socketfd, buffer, sizeof(buffer)))) {
+	// Receive response
+	if (!(bytes_read = read(socketfd, recvBuffer, sizeof(recvBuffer)))) {
 		cerr << "read failed: " << strerror(errno) << endl;
 	}
-	buffer[bytes_read] = '\0';
+	recvBuffer[bytes_read] = '\0';
 
-	// Print out the received message
-	cout << client_ID << " received message: " << buffer << endl;
+	// Print the message sent to the server, followed by the reply received from the server
+	cout << client_ID << " sent message: " << recvBuffer << endl;
+	cout << client_ID << " received message: " << sendBuffer << endl;
 
 	close(socketfd);
 	return 0;
