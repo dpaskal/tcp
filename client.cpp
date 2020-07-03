@@ -80,6 +80,7 @@ int main(int argc, char** argv) {
 	strcpy(sendBuffer, client_ID);
 	strcat(sendBuffer, ": ");
 	strcat(sendBuffer, client_name);
+	string sent = sendBuffer;
 	cout << sendBuffer << endl;
 	// Send message
 	if (!(send(socketfd, sendBuffer, strlen(sendBuffer), 0))) {
@@ -94,7 +95,7 @@ int main(int argc, char** argv) {
 
 	// Print the message sent to the server, followed by the reply received from the server
 	cout << endl;
-	cout << client_ID << " sent message: " << sendBuffer << endl;
+	cout << client_ID << " sent message: " << sent << endl;
 	cout << client_ID << " received message: " << recvBuffer << endl;
 
 	close(socketfd);
