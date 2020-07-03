@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 	// // Translate input to hostent struct
 	// // https://man7.org/linux/man-pages/man3/gethostbyname.3.html
 	if ((hn = gethostbyname(server_name)) == NULL )
-		return 1; // error checking gethostbyname
+		exit(EXIT_FAILURE);
 	memcpy(&serv_addr.sin_addr, hn->h_addr, hn->h_length);	// IP address
 
 
@@ -93,8 +93,9 @@ int main(int argc, char** argv) {
 	recvBuffer[bytes_read] = '\0';
 
 	// Print the message sent to the server, followed by the reply received from the server
-	cout << client_ID << " sent message: " << recvBuffer << endl;
-	cout << client_ID << " received message: " << sendBuffer << endl;
+	cout << endl;
+	cout << client_ID << " sent message: " << sendBuffer << endl;
+	cout << client_ID << " received message: " << recvBuffer << endl;
 
 	close(socketfd);
 	return 0;
