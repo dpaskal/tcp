@@ -98,6 +98,9 @@ int main(int argc, char **argv) {
 	// Respond to second call
 	send(secondfd, returnBuffer, 1024, 0);
 
+	// Output message
+	cout << DONE_MSG << endl;
+
 	//Close the closet
 	close(socketfd);
 	return 0;

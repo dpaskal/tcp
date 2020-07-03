@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 	strcpy(sendBuffer, client_ID);
 	strcat(sendBuffer, ": ");
 	strcat(sendBuffer, client_name);
-	string sent = sendBuffer;
+	string sent = sendBuffer;			// Needed to remember original message sent
 
 	// Send message
 	if (!(send(socketfd, sendBuffer, strlen(sendBuffer), 0))) {
