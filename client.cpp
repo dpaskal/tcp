@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 	strcpy(sendBuffer, client_ID);
 	strcat(sendBuffer, ": ");
 	strcat(sendBuffer, client_name);
-
+	cout << sendBuffer << endl;
 	// Send message
 	if (!(send(socketfd, sendBuffer, strlen(sendBuffer), 0))) {
 		cerr << "send failed: " << strerror(errno) << endl;
